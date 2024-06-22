@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Oups...{% endblock %}
+
+{% block body %}
+    <header class="wrapper">
+        <img src="{{ asset('img/logo_jobijoba.png') }}" alt="clin d'oeil">
+    </header>
+    <main>
+        <ul id="results">
+            <li class="empty"><div>Une erreur s'est produite : {{ message }}</div></li>
+        </ul>
+    </main>
+{% endblock %}

@@ -1,20 +1,57 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello IndexController!{% endblock %}
+{% block title %}Jobijoba !{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <header class="wrapper">
+        <img src="{{ asset('img/logo_jobijoba.png') }}" alt="clin d'oeil">
+    </header>
+    <main>
+        <form action="{{ path('app_index') }}">
+            <label for="what">Métier&nbsp;
+                <input id="what" type="text" name="what" placeholder="Infirmier, Développeur, ..." value="{{ query.what }}">
+            </label>
+            <label for="where">Ville&nbsp;
+                <input id="where" type="text" name="where" placeholder="Bordeaux, Lille, ..." value="{{ query.where }}">
+            </label>
+            <label for="limit">Résultats&nbsp;
+                <select name="limit" id="limit">
+                    <option value="10" {{ query.limit == 10 ? 'selected' : '' }}>10</option>
+                    <option value="25" {{ query.limit == 25 ? 'selected' : '' }}>25</option>
+                    <option value="50" {{ query.limit == 50 ? 'selected' : '' }}>50</option>
+                </select>
+            </label>
+            <input type="submit" value="Rechercher">
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+            <div class="results"><span>{{ data.total }}</span>&nbsp;résultat(s)</div>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/Users/i011948/localhost/bycrea/symfony6_starter/src/Controller/IndexController.php'|file_link(0) }}">src/Controller/IndexController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/Users/i011948/localhost/bycrea/symfony6_starter/templates/index/index.html.twig'|file_link(0) }}">templates/index/index.html.twig</a></code></li>
-    </ul>
-</div>
+            <select name="page" id="pages" onchange="submit()">
+                {% for i in pagination.from..pagination.to %}
+                    <option value="{{ i }}" {{ i == query.page ? 'selected' : '' }}>Page {{ i }}</option>
+                {% endfor %}
+            </select>
+        </form>
+
+        <ul id="results">
+            {% for ad in data.ads %}
+                <li class="ad">
+                    <div class="infos">
+                        <span class="title">{{ ad.title }}</span>
+                        <span class="city">{{ ad.city }}</span>
+                        <span class="contractType">{{ ad.contractType|join(', ') }}</span>
+                        <span class="company">{{ ad.company }}</span>
+                        <span class="jobtitle">{{ ad.jobtitle }}</span>
+                    </div>
+                    <div class="more">
+                        <span class="publicationDate">{{ ad.publicationDate|date('d/m/Y') }}</span>&nbsp;-&nbsp;<p class="description">{{ ad.description|raw }}</p>
+                    </div>
+                    <div class="link">
+                        <a href="{{ ad.link }}" target="_blank">Voir l'offre</a>
+                    </div>
+                </li>
+            {% else %}
+                <li class="empty"><div>Aucun résultat</div></li>
+            {% endfor %}
+        </ul>
+    </main>
 {% endblock %}
